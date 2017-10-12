@@ -43,7 +43,7 @@ And we need to remember when to pull from the local registry and when to pull fr
 
 Sure thing. The lovely people at Docker know that this is a requested feature, and are thinking about the best way to solve it without risking pulling the wrong image, pushing the right image to the wrong place, or falling victim to image identity fraud. But for now, I have a hack workaround.
 
-The trick is to share a single registry location with two different registries, one pull-through mirror of Docker Hub and one push-pull local registry. This solves my immediate problem, but be aware, it comes with a risk. If both registries write to the same file at the same time, you'll probably have two corrupted registries. There's no guaranteed way to avoid this, short of shutting down one registry every time you perform a write action of any sort on the other. If it ever happens to be (it hasn't yet), then I plan on blowing away and rebuilding my registry. This is very low cost where since I have very few internally-published images, but if you've got lots of images and don't want to risk losing your registry, then this hack is not for you.
+The trick is to share a single registry location with two different registries, one pull-through mirror of Docker Hub and one push-pull local registry. This solves my immediate problem, but be aware, it comes with a risk. If both registries write to the same file at the same time, you'll probably have two corrupted registries. There's no guaranteed way to avoid this, short of shutting down one registry every time you perform a write action of any sort on the other. If it ever happens to me (it hasn't yet), then I plan on blowing away and rebuilding my registry. This is very low cost for me since I have very few internally-published images, but if you've got lots of images and don't want to risk losing your registry, then this hack is not for you.
 
 
 # Step 1. Set up your push-pull local registry.
@@ -95,7 +95,7 @@ This assumes that the config file above is called `store.yml`. The local `cache`
 
 # Step 2. Set up your pull-through local registry mirror of Docker Hub.
 
-There's a recipe for this (on Docker docs)[https://docs.docker.com/registry/recipes/mirror/), but in essence you just need another local registry in your compose file:
+There's a recipe for this [on Docker docs](https://docs.docker.com/registry/recipes/mirror/), but in essence you just need another local registry in your compose file:
 
 ```yaml
   local_cache:
@@ -165,7 +165,7 @@ Restart each daemon in order to pick up those changes.
 sudo systemctl restart docker
 ```
 
-# Step 4. Use in anger.
+# Step 5. Use in anger.
 
 Now the original use case works. Having deployed an image to the local registry:
 
