@@ -165,7 +165,7 @@ Restart each daemon in order to pick up those changes.
 sudo systemctl restart docker
 ```
 
-# Step 4. Use in anger.
+# Step 5. Use in anger.
 
 Now the original use case works. Having deployed an image to the local registry:
 
