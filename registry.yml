@@ -1,0 +1,20 @@
+version: '3.3'
+
+# Docker-compose file for a local docker registry.
+services:
+  local_cache:
+    image: registry:2
+    ports:
+      - 127.0.0.1:5001:5000
+    volumes:
+      - ./cache:/var/lib/registry
+      - ./cache.yml:/etc/docker/registry/config.yml
+
+  local_store:
+    image: registry:2
+    ports:
+      - 127.0.0.1:5000:5000
+    volumes:
+      - ./cache:/var/lib/registry
+      - ./store.yml:/etc/docker/registry/config.yml
+
