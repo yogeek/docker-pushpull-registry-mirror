@@ -7,21 +7,21 @@ This particular configuration adds a slightly risky but quite handy tweak: every
 Say I want to make a local variant of the popular alpine image and publish internally for my colleages to use. First, I need to make my local variant:
 
 ```sh
-sudo docker pull alpine
+docker pull alpine
 ./customize_image alpine local_alpine
 ```
 
 The `customize_image` script has made the expected changes and created a new image local_alpine. Now I want to push local_alpine to a local registry that my colleagues can pull it from. Assuming my registry is at docker.registry.local:5000, I can tag and push the image thus:
 
 ```sh
-sudo docker tag local_alpine docker.registry.local:5000/local_alpine
-sudo docker push docker.registry.local:5000/local_alpine
+docker tag local_alpine docker.registry.local:5000/local_alpine
+docker push docker.registry.local:5000/local_alpine
 ```
 
 Slightly wordy, but all this belongs in a CI pipeline somewhere, so you only have to figure it out once. The bit that happens much more frequently is when anyone pull this CI-built image for their use:
 
 ```sh
-sudo docker pull local_alpine
+docker pull local_alpine
 ```
 
 Which of course gives us
@@ -34,7 +34,7 @@ Error response from daemon: pull access denied for local_alpine, repository does
 Oops, wrong registry. Actually, we need to do this:
 
 ```sh
-sudo docker pull docker.registry.local:5000/local_alpine
+docker pull docker.registry.local:5000/local_alpine
 ```
 
 And we need to remember when to pull from the local registry and when to pull from the default public registry (Docker Hub).
@@ -137,15 +137,15 @@ proxy:
 Assuming you saved your docker compose file as registry.yml then you can do this if you're not using Swarm:
 
 ```sh
-sudo docker-compose -f registry.yml up
-# And you'll use "sudo docker-compose -f registry.yml down" to turn off the registries, if you need to.
+docker-compose -f registry.yml up
+# And you'll use "docker-compose -f registry.yml down" to turn off the registries, if you need to.
 ```
 
 Or this if you are using Swarm:
 
 ```sh
-sudo docker stack deploy -c registry.yml registry
-# And you'll use "sudo docker stack delete registry" to turn them off.
+docker stack deploy -c registry.yml registry
+# And you'll use "docker stack delete registry" to turn them off.
 ```
 
 # Step 4. Use your registries.
@@ -162,7 +162,7 @@ On each docker host (machine running the docker daemon), you'll need to configur
 Restart each daemon in order to pick up those changes.
 
 ```sh
-sudo systemctl restart docker
+systemctl restart docker
 ```
 
 # Step 5. Use in anger.
@@ -170,16 +170,16 @@ sudo systemctl restart docker
 Now the original use case works. Having deployed an image to the local registry:
 
 ```sh
-sudo docker pull alpine
+docker pull alpine
 ./customize_image alpine local_alpine
-sudo docker tag local_alpine docker.registry.local:5000/local_alpine
-sudo docker push docker.registry.local:5000/local_alpine
+docker tag local_alpine docker.registry.local:5000/local_alpine
+docker push docker.registry.local:5000/local_alpine
 ```
 
 Remember the broken step from the introduction?
 
 ```sh
-sudo docker pull local_alpine
+docker pull local_alpine
 ```
 
 Now it works! Any image will be pulled from the local registry set up as the docker mirror, as configured by "registry-mirrors" above. If the image has previously been pushed there or been cached after being pulled from Docker hub, then it is immediately pulled from the local registry. Otherwise it is pulled from Docker Hub and cached, ready for next time. 
